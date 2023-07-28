@@ -1,0 +1,7 @@
+{
+  "tasks": {
+    "dev": "deno run --watch main.ts",
+    "start": "deno run --allow-env --allow-read --allow-run --allow-net --allow-write main.ts",
+    "build": "deno compile --unstable --allow-env --allow-read --allow-run --allow-net --allow-write --output dist/commit-ai main.ts"
+  }
+}
