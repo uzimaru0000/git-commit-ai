@@ -9,21 +9,21 @@ import { Config, readConfig, saveConfig } from "./lib/config.ts";
 import { getDiff } from "./lib/git.ts";
 import { completion } from "./lib/openai.ts";
 import { format } from "./lib/message.ts";
+import config from './config.json' assert { type: "json" }
 
 const hook = new Command()
   .description("Output shell script for git commit-msg hook")
   .action(() => {
     console.log(`#!/bin/sh
 
-# git-commit-aiの出力をコミットメッセージとしてセットする
 git-commit-ai > $1
 `);
   });
 
 const main = new Command()
-  .name("git-commit-ai")
-  .version("v0.1.0")
-  .description("A CLI tool to help you write better commit messages.")
+  .name(config.name)
+  .version(`v${config.version}`)
+  .description(config.description)
   .option("--key <key:string>", "An OpenAI API key", {
     required: false,
   })
