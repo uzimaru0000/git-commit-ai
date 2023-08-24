@@ -1,17 +1,29 @@
 import { Command } from "https://deno.land/x/cliffy@v1.0.0-rc.2/command/mod.ts";
-// @deno-types="npm:@types/prompts"
-import prompts from "npm:prompts";
+import {
+  Input,
+  Secret,
+  Select,
+} from "https://deno.land/x/cliffy@v1.0.0-rc.2/prompt/mod.ts";
 import ora from "npm:ora";
 import { Config, readConfig, saveConfig } from "./lib/config.ts";
 import { getDiff } from "./lib/git.ts";
 import { completion } from "./lib/openai.ts";
 import { format } from "./lib/message.ts";
-import { stderr } from "node:process";
 
-await new Command()
+const hook = new Command()
+  .description("Output shell script for git commit-msg hook")
+  .action(() => {
+    console.log(`#!/bin/sh
+
+# git-commit-aiの出力をコミットメッセージとしてセットする
+git-commit-ai > $1
+`);
+  });
+
+const main = new Command()
   .name("git-commit-ai")
-  .description("A CLI tool to help you write better commit messages.")
   .version("v0.1.0")
+  .description("A CLI tool to help you write better commit messages.")
   .option("--key <key:string>", "An OpenAI API key", {
     required: false,
   })
@@ -36,15 +48,12 @@ await new Command()
   .action(async ({ config: configPath, key, hint, ...args }) => {
     const config = await readConfig(configPath);
 
-    let apiKey = key || config.apiKey;
-    if (!apiKey) {
-      const input = await prompts({
-        type: "password",
-        name: "apiKey",
+    const apiKey =
+      key ??
+      config.apiKey ??
+      (await Secret.prompt({
         message: "Enter your OpenAI API key",
-      });
-      apiKey = input.apiKey;
-    }
+      }));
 
     const fullConfig: Config = {
       ...config,
@@ -63,32 +72,17 @@ await new Command()
       const res = await completion(diff, { ...fullConfig, hint });
       spinner.succeed();
 
-      let { message } = await prompts({
-        type: "select",
-        name: "message",
+      let message = await Select.prompt({
         message: "Choice a commit message",
-        choices: [
-          ...format(res ?? "").map((line) => ({
-            title: line,
-            value: line,
-          })),
-          {
-            title: "Custom",
-            value: "custom",
-          },
-        ],
-        stdout: stderr,
+        options: [...format(res ?? "").map((line) => line), "custom"],
+        writer: Deno.stderr,
       });
 
       if (message === "custom") {
-        const input = await prompts({
-          type: "text",
-          name: "message",
+        message = await Input.prompt({
           message: "Enter your commit message",
-          stdout: stderr,
+          writer: Deno.stderr,
         });
-
-        message = input.message;
       }
 
       console.log(message);
@@ -105,5 +99,6 @@ await new Command()
       console.log(e);
       Deno.exit(1);
     }
-  })
-  .parse();
+  });
+
+await main.command("hook", hook).parse(Deno.args);
