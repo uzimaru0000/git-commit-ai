@@ -40,65 +40,70 @@ const prefixMap: Record<Prefix, string[]> = {
     "perf",
     "test",
     "build",
-    "ci",
+    "chore",
     "chore",
     "revert",
   ],
   scope: [
-    "(codebase)",
-    "(database)",
-    "(deprecated)",
     "(auth)",
-    "(security)",
-    "(user-profile)",
-    "(readme)",
-    "(production)",
-    "(login-page)",
-    "(project)",
-    "(user-login)",
+    "(login)",
+    "(README)",
+    "(buttons)",
+    "(login)",
+    "(images)",
+    "(registration)",
+    "(ci)",
+    "(dependencies)",
+    "(config)",
+    "(login)",
   ],
 };
 
-const lang = ['en', 'ja'] as const
+const lang = ["en", "ja"] as const;
 const body = ["description"] as const;
 type Body = (typeof body)[number];
 type Lang = (typeof lang)[number];
 const bodyMap: Record<Body, Record<Lang, string[]>> = {
   description: {
     en: [
-    "Implement new caching mechanism",
-    "Resolve database connection issues",
-    "Update documentation regarding deprecated features",
-    "Improve UI of authentication module",
-    "Enhance password encryption methods",
-    "Boost performance of user profile loading",
-    "Add unit tests for README file parser",
-    "Setup Docker for production environment",
-    "Add continuous integration for login page",
-    "Update project dependencies",
-    "Revert changes to user login process due to bugs",
-  ],
-  ja: [
-    "新しいキャッシュメカニズムを実装する",
-    "データベース接続の問題を解決する",
-    "非推奨の機能に関するドキュメントを更新する",
-    "認証モジュールのUIを改善する",
-    "パスワード暗号化方法を改善する",
-    "ユーザープロファイルの読み込みパフォーマンスを向上させる",
-    "READMEファイルパーサーのユニットテストを追加する",
-    "本番環境のDockerをセットアップする",
-    "ログインページの継続的な統合を追加する",
-    "プロジェクトの依存関係を更新する",
-    "バグのためユーザーログインプロセスの変更を元に戻す",
-  ]
-  }
+      "Add new user authentication feature",
+      "Fix issue with user login not working",
+      "Update README with new installation steps",
+      "Improve button styling on main page",
+      "Refactor login function for clarity",
+      "Optimize image loading for faster page render",
+      "Add tests for user registration flow",
+      "Update Travis CI to include new test suite",
+      "Update dependencies to latest versions",
+      "Update .gitignore to exclude new temp files",
+      "Revert to previous version of login page",
+    ],
+    ja: [
+      "新しいユーザー認証機能を追加",
+      "ユーザーログインが機能しない問題を修正",
+      "新しいインストール手順でREADMEを更新",
+      "メインページのボタンスタイルを改善",
+      "クラリティのためにログイン機能をリファクタリング",
+      "画像の読み込みを最適化してページのレンダリングを高速化",
+      "ユーザー登録フローのテストを追加",
+      "新しいテストスイートを含むTravis CIを更新",
+      "最新バージョンの依存関係を更新",
+      "新しい一時ファイルを除外するように.gitignoreを更新",
+      "以前のバージョンのログインページに戻す",
+    ],
+  },
 };
 const langMap: Record<Lang, string> = {
   en: "English",
-  ja: "Japanese"
-}
+  ja: "Japanese",
+};
 
-export const createPrompt = (format: string, lang: Lang, diff: string, hint?: string) => {
+export const createPrompt = (
+  format: string,
+  lang: Lang,
+  diff: string,
+  hint?: string
+) => {
   const examples = zip(
     ...prefix.map((p) => prefixMap[p]),
     ...body.map((b) => bodyMap[b][lang])
