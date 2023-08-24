@@ -23,6 +23,7 @@ const ConfigSchema = object({
   model: optional(enumType(models)),
   temperature: optional(number([minRange(0), maxRange(1)])),
   format: optional(string()),
+  lang: optional(enumType(["en", "ja"] as const)),
 });
 
 export type Config = Partial<Output<typeof ConfigSchema>>;
@@ -35,6 +36,7 @@ export const defaultConfig: Required<Omit<Config, "apiKey">> = {
   model: "gpt-3.5-turbo",
   temperature: 1.0,
   format: "<angular> <scope>: <description>",
+  lang: "en"
 };
 
 const exists = async (path: string) => {
