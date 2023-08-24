@@ -113,6 +113,7 @@
     "specifiers": {
       "@iarna/toml": "@iarna/toml@2.2.5",
       "@types/lodash-es": "@types/lodash-es@4.17.8",
+      "@types/node": "@types/node@18.11.18",
       "@types/prompts": "@types/prompts@2.4.4",
       "cleye": "cleye@1.3.2",
       "lodash-es": "lodash-es@4.17.21",
@@ -136,6 +137,10 @@
       },
       "@types/lodash@4.14.196": {
         "integrity": "sha512-22y3o88f4a94mKljsZcanlNWPzO0uBsBdzLAngf2tp533LzZcQzb6+eZPJ+vCTt+bqF2XnvT9gejTLsAcJAJyQ==",
+        "dependencies": {}
+      },
+      "@types/node@18.11.18": {
+        "integrity": "sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==",
         "dependencies": {}
       },
       "@types/node@20.4.0": {
