@@ -10,6 +10,7 @@ import {
   safeParseAsync,
   string,
 } from "npm:valibot@0.3.0";
+import { OptionalRecord } from "./util.ts";
 
 const models = [
   "gpt-3.5-turbo",
@@ -19,25 +20,25 @@ const models = [
 ] as const;
 
 const ConfigSchema = object({
-  apiKey: string(),
+  apiKey: optional(string()),
   model: optional(enumType(models)),
   temperature: optional(number([minRange(0), maxRange(1)])),
   format: optional(string()),
   lang: optional(enumType(["en", "ja"] as const)),
 });
 
-export type Config = Partial<Output<typeof ConfigSchema>>;
+export type Config = OptionalRecord<Output<typeof ConfigSchema>>;
 
 const configPath = () => {
   return `${Deno.env.get("HOME") ?? ""}/.commit_ai.toml`;
 };
 
-export const defaultConfig: Required<Omit<Config, "apiKey">> = {
+export const defaultConfig = {
   model: "gpt-3.5-turbo",
   temperature: 1.0,
   format: "<angular> <scope>: <description>",
   lang: "en"
-};
+} satisfies Config;
 
 const exists = async (path: string) => {
   try {

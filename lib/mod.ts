@@ -60,6 +60,7 @@ const main = (name: string, version: string, description: string) => {
         config.apiKey ??
         (await Secret.prompt({
           message: "Enter your OpenAI API key",
+          writer: Deno.stderr,
         }));
 
       const fullConfig: Config = {
