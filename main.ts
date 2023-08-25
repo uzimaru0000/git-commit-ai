@@ -9,14 +9,25 @@ import { Config, readConfig, saveConfig } from "./lib/config.ts";
 import { getDiff } from "./lib/git.ts";
 import { completion } from "./lib/openai.ts";
 import { format } from "./lib/message.ts";
-import config from './config.json' assert { type: "json" }
+import config from "./config.json" assert { type: "json" };
+
+Deno.addSignalListener('SIGINT', () => {
+  Deno.exit(1);
+})
 
 const hook = new Command()
   .description("Output shell script for git commit-msg hook")
   .action(() => {
-    console.log(`#!/bin/sh
+    console.log(`#!/bin/bash
 
-git-commit-ai > $1
+# copy this file to .git/hooks/prepare-commit-msg
+#
+# git-commit-ai hook > .git/hooks/prepare-commit-msg
+# chmod +x .git/hooks/prepare-commit-msg
+
+if [ -z $2 ]; then
+  git-commit-ai > $1
+fi
 `);
   });
 
@@ -78,6 +89,10 @@ const main = new Command()
         writer: Deno.stderr,
       });
 
+      if (!message) {
+        Deno.exit(1);
+      }
+
       if (message === "custom") {
         message = await Input.prompt({
           message: "Enter your commit message",
@@ -94,9 +109,8 @@ const main = new Command()
         },
         configPath
       );
-    } catch (e) {
+    } catch {
       spinner.fail();
-      console.log(e);
       Deno.exit(1);
     }
   });
