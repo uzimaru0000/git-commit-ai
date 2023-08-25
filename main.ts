@@ -18,7 +18,7 @@ Deno.addSignalListener('SIGINT', () => {
 const hook = new Command()
   .description("Output shell script for git commit-msg hook")
   .action(() => {
-    console.log(`#!/bin/bash
+    console.log(`#!/usr/bin/env bash
 
 # copy this file to .git/hooks/prepare-commit-msg
 #
