@@ -100,10 +100,7 @@ const main = (name: string, version: string, description: string) => {
         console.log(message);
 
         await saveConfig(
-          {
-            ...config,
-            apiKey,
-          },
+          config,
           configPath
         );
       } catch {
