@@ -121,6 +121,6 @@ export const createPrompt = (
     .replace("{{format}}", format)
     .replace("{{examples}}", examples)
     .replace("{{lang}}", langMap[lang])
-    .replace("{{diff}}", `\`\`\`\n${diff}\n\`\`\``)
+    .replace("{{diff}}", `\`\`\`diff\n${diff}\n\`\`\``)
     .replace("{{hint}}", hint ? `hint: ${hint}` : "");
 };
