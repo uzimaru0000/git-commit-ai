@@ -21,6 +21,7 @@ const hook = new Command()
 # chmod +x .git/hooks/prepare-commit-msg
 
 if [ -z $2 ]; then
+  exec < /dev/tty
   git-commit-ai > $1
 fi
 `);
@@ -77,12 +78,12 @@ const main = (name: string, version: string, description: string) => {
 
       const spinner = ora("Generating commit message").start();
       try {
-        const res = await completion(diff, { ...fullConfig, hint });
+        const { commit_messages } = await completion(diff, { ...fullConfig, hint });
         spinner.succeed();
 
         let message = await Select.prompt({
           message: "Choice a commit message",
-          options: [...format(res ?? "").map((line) => line), "custom"],
+          options: [...commit_messages, "custom"],
           writer: Deno.stderr,
         });
 
